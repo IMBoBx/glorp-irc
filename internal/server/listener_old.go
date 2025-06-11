@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"bufio"
@@ -39,19 +39,19 @@ func handleConn(conn net.Conn, connections map[string]net.Conn, mu *sync.Mutex) 
 
 	for {
 		line, _ := reader.ReadString('\n')
-		
+
 		if strings.Compare("EXIT " + nick + "\n", line) == 0 {
-			
+
 			fmt.Println(nick, "left!")
 			break
-		} 
+		}
 
 		fmt.Printf("%-12s > %s", nick, line)
 	}
 
 }
 
-func main() {
+func init() {
 	ln, err := net.Listen("tcp", "localhost:"+PORT)
 	handleErr(err)
 	defer ln.Close()
