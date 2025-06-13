@@ -38,7 +38,7 @@ func newConnection(i int, c chan bool) {
 	}
 }
 
-func main() {
+func init() {
 	done := make(chan bool, MAX)
 
 	for i := range MAX {
