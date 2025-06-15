@@ -1,9 +1,14 @@
+// 
+
+
+// cmd/client/main.go
 package main
 
 import (
 	"log"
 
 	"github.com/IMBoBx/glorp-irc/internal/client"
+	tea "github.com/charmbracelet/bubbletea"
 )
 
 func main() {
@@ -13,6 +18,13 @@ func main() {
 	}
 	defer conn.Close()
 
-	go client.ReceiveMessage(conn)
-	client.SendMessage(conn)
+
+	m := client.InitialModel(conn)
+	p := tea.NewProgram(m)
+
+	go client.StartReceiver(conn, p)
+
+	if _, err := p.Run(); err != nil {
+		log.Fatal(err)
+	}
 }
