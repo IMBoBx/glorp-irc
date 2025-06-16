@@ -1,7 +1,3 @@
-// 
-
-
-// cmd/client/main.go
 package main
 
 import (

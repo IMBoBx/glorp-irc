@@ -7,6 +7,7 @@ import (
 	"net"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Connection struct {
@@ -54,6 +55,7 @@ func AcceptConnections() {
 	for {
 		conn, err := tcp.Listener.Accept()
 		if err != nil {
+			conn.Close()
 			continue
 		}
 
@@ -62,33 +64,40 @@ func AcceptConnections() {
 }
 
 func ReadConnection(conn net.Conn) {
+	var (
+		username string
+		room     string
+		err      error
+	)
+
 	reader := bufio.NewReader(conn)
 	message, err := reader.ReadString('\n')
 	if err != nil {
 		conn.Write([]byte(err.Error()))
+		time.Sleep(time.Second)
 		conn.Close()
-		return
 	}
 
-	username, room, err := handleFirstMessage(message)
+	username, room, err = handleFirstMessage(message)
 	if err != nil {
-		conn.Write([]byte(err.Error()))
+		conn.Write([]byte(err.Error() + "\n"))
+		time.Sleep(time.Second)
 		conn.Close()
-		return
 	}
 
 	if err := CreateRoom(room); err != nil && !strings.Contains(err.Error(), "already exists") {
-		conn.Write([]byte(err.Error()))
+		conn.Write([]byte(err.Error() + "\n"))
+		time.Sleep(time.Second)
 		conn.Close()
-		return
 	}
 
 	err = AddConnection(username, room, conn)
 	if err != nil {
-		conn.Write([]byte(err.Error()))
+		conn.Write([]byte(err.Error() + "\n"))
+		time.Sleep(time.Second)
 		conn.Close()
-		return
 	}
+
 }
 
 func handleFirstMessage(message string) (string, string, error) {
@@ -159,7 +168,7 @@ func AddConnection(username, room string, conn net.Conn) error {
 		Conn:     conn,
 	}
 
-	tcp.Rooms[room].Buffer <- username + " joined!\n"
+	tcp.Rooms[room].Buffer <- "\033[95m"+ username + " joined!\033[0m\n"
 
 	go WatchMessage(username, room)
 
@@ -188,7 +197,7 @@ func WatchMessage(username, room string) error {
 		if err != nil || message == "/leave "+username+"\n" {
 			r.mu.Lock()
 
-			r.Buffer <- username + " left!\n"
+			r.Buffer <- "\033[91m" + username + " left!\033[0m\n"
 
 			conn.Conn.Close()
 			delete(r.Users, username)
@@ -205,7 +214,7 @@ func WatchMessage(username, room string) error {
 			break
 		}
 
-		r.Buffer <- fmt.Sprintf("[%s] > %s", username, message)
+		r.Buffer <- fmt.Sprintf("[\033[96m%s\033[0m] %s", username, message)
 
 	}
 
