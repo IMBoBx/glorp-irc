@@ -2,13 +2,19 @@ package client
 
 import (
 	"bufio"
+	"fmt"
 	"net"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 func Connect() (net.Conn, error) {
-	conn, err := net.Dial("tcp", "localhost:8800")
+	var addr string
+	fmt.Print("Enter server address: ")
+	fmt.Scan(&addr)
+
+	conn, err := net.Dial("tcp", addr)
+
 	if err != nil {
 		return nil, err
 	}

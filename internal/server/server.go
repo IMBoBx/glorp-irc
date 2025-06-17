@@ -168,7 +168,7 @@ func AddConnection(username, room string, conn net.Conn) error {
 		Conn:     conn,
 	}
 
-	tcp.Rooms[room].Buffer <- "\033[95m"+ username + " joined!\033[0m\n"
+	tcp.Rooms[room].Buffer <- "\033[95m" + username + " joined!\033[0m\n"
 
 	go WatchMessage(username, room)
 

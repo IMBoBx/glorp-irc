@@ -35,21 +35,22 @@ func InitialModel(conn net.Conn) model {
 
 	vp := viewport.New(30, 5)
 	vp.SetContent("               _                        _        \n" +
-" __ __ __ ___ | | __  ___  _ __   ___  | |_  ___ \n" +
-" \\ V  V // -_)| |/ _|/ _ \\| '  \\ / -_) |  _|/ _ \\\n" +
-"  \\_/\\_/ \\___||_|\\__|\\___/|_|_|_|\\___|  \\__|\\___/\n" +
-"          __ _  | |  ___   _ _   _ __            \n" +
-"         / _` | | | / _ \\ | '_| | '_ \\           \n" +
-"         \\__, | |_| \\___/ |_|   | .__/           \n" +
-"         |___/                  |_|              \n" + 
-"Type `/join <username> <room-name>` for joining a channel.")
+		" __ __ __ ___ | | __  ___  _ __   ___  | |_  ___ \n" +
+		" \\ V  V // -_)| |/ _|/ _ \\| '  \\ / -_) |  _|/ _ \\\n" +
+		"  \\_/\\_/ \\___||_|\\__|\\___/|_|_|_|\\___|  \\__|\\___/\n" +
+		"          __ _  | |  ___   _ _   _ __            \n" +
+		"         / _` | | | / _ \\ | '_| | '_ \\           \n" +
+		"         \\__, | |_| \\___/ |_|   | .__/           \n" +
+		"         |___/                  |_|              \n" +
+		"Type `/join <username> <room-name>` for joining a channel.\n" +
+		"Type `/leave <username>` or press Ctrl+C to exit.\n")
 
 	return model{
 		textarea:    ta,
 		messages:    []string{},
 		viewport:    vp,
 		senderStyle: lipgloss.NewStyle().Bold(true),
-		err:          nil,
+		err:         nil,
 		conn:        conn,
 	}
 }

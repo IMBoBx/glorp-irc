@@ -15,5 +15,5 @@ func main() {
 
 	fmt.Println("Server listening on localhost:8800")
 	server.AcceptConnections()
-	
+
 }
