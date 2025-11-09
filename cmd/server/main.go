@@ -8,12 +8,13 @@ import (
 )
 
 func main() {
-	err := server.StartServer()
+	addressChan, err := server.StartServer()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Server listening on localhost:8800")
+	addr := <-addressChan
+	fmt.Println("Server listening on ", addr)
 	server.AcceptConnections()
 
 }

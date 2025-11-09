@@ -5,9 +5,12 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
 type Connection struct {
@@ -33,22 +36,31 @@ var (
 	max = 32
 )
 
-func StartServer() error {
+func StartServer() (<-chan string, error) {
 	if tcp != nil {
-		return errors.New("server already started")
+		return nil, errors.New("server already started")
 	}
 
-	ln, err := net.Listen("tcp", "localhost:8800")
-	if err != nil {
-		return err
+	godotenv.Load()
+	serverAddr := os.Getenv("SERVER_ADDRESS")
+	if serverAddr == "" {
+		serverAddr = "0.0.0.0:8800"
 	}
+
+	ln, err := net.Listen("tcp", serverAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	addressChannel := make(chan string, 1)
+	addressChannel <- serverAddr
 
 	tcp = &Server{
 		Listener: ln,
 		Rooms:    make(map[string]*Room),
 	}
 
-	return nil
+	return addressChannel, nil
 }
 
 func AcceptConnections() {
