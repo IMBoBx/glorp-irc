@@ -73,7 +73,6 @@ glorp-irc/
 ├── internal/
 │   ├── client/         # Client implementation
 │   └── server/         # Server implementation
-├── client-releases/    # Pre-built client binaries
 ├── releases/          # Release artifacts
 ├── .env              # Environment configuration (optional)
 ├── go.mod            # Go module dependencies
